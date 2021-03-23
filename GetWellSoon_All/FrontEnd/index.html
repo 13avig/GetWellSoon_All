@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang = "en" dir = "ltr">
+
+  <head>
+    <meta charset = "utf-8">
+    <link rel = "stylesheet" type = "text/css" href = "common.css">
+    <link rel = "stylesheet" type = "text/css" href = "index.css">
+    <title>GetWellSoon</title>
+    <script src = "index.js"></script>
+  </head>
+
+  <body>
+
+    <nav id = "nav">
+      <a href = "index.html">GetWellSoon.ai</a>
+      <a href = "about.html">About</a>
+    </nav>
+
+    <div id = "main-page">
+      <div id = "left-container">
+
+        <div id = "banner">
+          <h1 id = "banner-title">Get Well Soon</h1>
+          <p id = "banner-text">Quickly search for and enroll in the right clinical trial for you.</p>
+        </div>
+
+        <div id = "trial-count">
+          <h1 id = "trial-count-title">310,000</h1>
+          <p id = "trial-count-text">clinical trials and counting...</p>
+        </div>
+      </div>
+
+      <form id = "form" onsubmit = "submitForm()" action = "results.html">
+        <h1 id = "form-title">Find a trial today</h1>
+        <input id = "condition-field" class = "input-field" type = "text" placeholder = "Condition">
+        <input id = "age-field" class = "input-field" type = "text" placeholder = "Age"
+        ><input id = "gender-field" class = "input-field" type = "text" placeholder = "Gender">
+        <input id = "location-field" class = "input-field" type = "text" placeholder = "Location">
+        <input id = "button" type = "submit" value = "Search">
+      </form>
+
+    </div>
+  </body>
+</html>

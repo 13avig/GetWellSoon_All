@@ -1,0 +1,147 @@
+#main-page {
+  display: flex;
+  justify-content: space-between;
+  margin: 120px 0px;
+}
+
+#banner {
+  margin-bottom: 100px;
+}
+
+#banner-title {
+  color: #000000;
+  font-size: 70px;
+  font-weight: 700;
+  margin: 0;
+}
+
+#banner-text {
+	color: #000000;
+	font-size: 25px;
+  margin: 0;
+  width: 440px;
+}
+
+#trial-count-title {
+  font-family: Poppins, sans-serif;
+  color: #000000;
+  font-size: 50px;
+  font-weight: 700;
+  margin: 0;
+}
+
+#trial-count-text {
+  font-family: Poppins, sans-serif;
+  color: #000000;
+  font-size: 25px;
+  margin: 0;
+}
+
+#form {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px 0 rgba(0,0,0,0.1);
+  width: 450px;
+  margin-top: 10px;
+}
+
+#form-title {
+  color: #000000;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -1.67px;
+  padding: 30px;
+  margin: 0;
+}
+
+.input-field {
+  font-family: Poppins, sans-serif;
+  padding: 16px;
+  font-size: 17px;
+  border-radius: 6px;
+  border: 1px solid #DDE3E6;
+  width: 356px;
+  margin: 0 30px 20px 30px;
+}
+
+.input-field:focus {
+  outline-color: #3D8DAF;
+}
+
+#age-field {
+  width: 146px;
+}
+
+#gender-field {
+  width: 146px;
+  margin-left: 0;
+}
+
+#button {
+  margin: 10px 30px 30px 30px;
+  padding: 13px 40px;
+  width: 390px;
+  font-family: Poppins, sans-serif;
+  border-radius: 6px;
+  font-weight: 400;
+  font-size: 23px;
+  background: #3D8DAF;
+  border: 0px;
+  color: #ffffff;
+}
+
+/*
+.database {
+  //padding: 5px;
+  //border: 2px solid red;
+  //background-color: #DCEDF0;
+  color: #407bac;
+  //width: 300px;
+}
+
+.database-descr {
+  font-size: 26px;
+  margin: 0;
+}
+
+.database-count {
+  font-size: 50px;
+	font-weight: 1000;
+  margin-bottom: 0;
+}
+
+//Alka
+.left-container {
+  margin-right:70px;
+}
+#trial-search-form-name {
+	height: 43px;
+	width: 259px;
+	color: #2D3E50;
+	font-family: Poppins;
+	font-size: 30px;
+	font-weight: bold;
+	line-height: 46px;
+  margin: 0;
+  //margin: 15px 0 10px 0;
+  padding-left: 40px;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+#trial-search-form-submit {
+  margin-left: 40px;
+  margin-right: 40px;
+  margin-top: 10px;
+	height: 75px;
+	width: 380px;
+	border-radius: 37.5px;
+	background-color: #408DAC;
+	color: #FFFFFF;
+	font-family: Poppins;
+	font-size: 24px;
+	font-weight: bold;
+	line-height: 35px;
+}
+*/

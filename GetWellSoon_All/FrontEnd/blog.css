@@ -1,0 +1,49 @@
+.banner {
+  //padding: 5px;
+  margin-bottom: 35px;
+}
+
+.banner-title {
+	height: 79px;
+	//width: 437px;
+	//color: aliceblue;
+  color: #2D3E50;
+	font-family: Poppins;
+	font-size: 30px;
+	font-weight: 1000;
+	line-height: 85px;
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+.banner-link a{
+	//height: 126px;
+	//width: 436px;
+	//color: #2D3E50;
+  color: blue;
+	font-family: Poppins;
+	font-size: 20px;
+	//line-height: 42px;
+  margin-top: 0;
+  margin-bottom: 0;
+  text-decoration: none}
+
+.banner-footer {
+	height: 79px;
+	//width: 437px;
+	//color: aliceblue;
+  color: #2D3E50;
+	font-family: Poppins;
+	font-size: 20px;
+	font-weight: 1000;
+	line-height: 85px;
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+.main-page {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 70px;
+  //border: 1px solid green;
+}
