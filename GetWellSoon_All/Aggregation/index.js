@@ -20,7 +20,7 @@ const normalizePort = (val) => {
 
 const getBind = () => {
   const addr = server.address();
-  const bind = typeof addr === 'string' ? `pipe${addr}` : `${addr.address}${addr.port}`;
+  const bind = typeof addr === 'string' ? addr : `${addr.address}${addr.port}`;
   return bind;
 };
 
@@ -32,14 +32,12 @@ const onListening = () => {
 const onError = (error) => {
   if (error.syscall !== 'listen') throw error;
 
-  const bind = getBind();
-
   switch(error.code) {
     case 'EACCES':
-      debug(bind + ' requires elevated privileges');
+      debug(port + ' requires elevated privileges');
       process.exit(1);
     case 'EADDRINUSE':
-      debug(bind + ' is already in use');
+      debug(port + ' is already in use');
       process.exit(1);
     default:
       throw error;
