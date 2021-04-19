@@ -1,6 +1,7 @@
 const http = require("http");
 const app = require("./app");
 const debug = require('debug')('aggregationapp:index');
+const config = require('./config');
 
 /**
  * Required functions
@@ -17,14 +18,21 @@ const normalizePort = (val) => {
   return false;
 };
 
-const onListening = () => {
+const getBind = () => {
   const addr = server.address();
-  const bind = typeof add === 'string' ? `pipe${addr}` : `pipe${addr.port}`;
+  const bind = typeof addr === 'string' ? `pipe${addr}` : `${addr.address}${addr.port}`;
+  return bind;
+};
+
+const onListening = () => {
+  const bind = getBind();
   debug('Listening on ' + bind);
 };
 
 const onError = (error) => {
   if (error.syscall !== 'listen') throw error;
+
+  const bind = getBind();
 
   switch(error.code) {
     case 'EACCES':
@@ -42,7 +50,7 @@ const onError = (error) => {
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(config.port);
 app.set('port', port);
  
 /**

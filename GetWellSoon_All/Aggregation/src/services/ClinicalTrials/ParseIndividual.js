@@ -1,6 +1,3 @@
-// const puppeteer = require("puppeteer");
-// const PuppeteerHelper = require('src/helpers/PuppeteerHelper');
-
 class ParseIndividual {
 
   constructor(props) {

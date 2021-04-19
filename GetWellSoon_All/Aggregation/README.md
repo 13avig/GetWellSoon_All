@@ -45,10 +45,11 @@ This project is backed by the Node (>=10.0.0) and based upon the layered archite
 |./src/helpers|1. Helper name(Pascal case only)<br/>2. Helpers are classes, used to simplify some repeatitive but a complex task.|Helper can be called by a service, to perform some specific task which is common among several other service.|
 |./src/utils|1. Meaningful name(Camelcase only)<br/>2. Preferred to be defined in the index.js only|Utils contain some generic function, which can be used to avoid multiple declaration of that function|
 <br/><br/>
-## SETUP [Linux based]
+## LOCAL SETUP [OS: Linux based]
 
-1. Make sure your system is having node(>=10.0.0) and npm(>=6.0.0.)/yarn(>=1.19.1) pre-installed.
+1. Make sure your system have pre-installed node(`>=v10.0.0`) and npm(`>=v6.0.0`)/yarn(`>=v1.19.1`).
 2. Take the checkout of the repository with your valid Git credentials.
-3. Now, inside the Aggregation directory execute `yarn install`. This will going to install all the required basic required modules.
-4. Once all the required modules get installed, then run the `yarn start` for the development.
-> In development, you will not require to execute start sript after each code change. [nodemon](https://www.npmjs.com/package/nodemon) is there to take care oof this. So you just keep focus on coding.
+3. Now, inside the Aggregation directory execute `yarn install`. This will going to install all the required modules used for development.
+4. After the successfull installation, rename `.env.example` to `.env`
+5. Setup is almost ready, now for the development run `yarn start`. You will find node have started to listen a port.
+> In development, you will not require to execute start script after each code change. [nodemon](https://www.npmjs.com/package/nodemon) is there to take care of this. So just keep your focus on coding.
