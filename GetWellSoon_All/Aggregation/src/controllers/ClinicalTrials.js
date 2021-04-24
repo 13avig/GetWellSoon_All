@@ -16,7 +16,7 @@ const ClinicalTrials = {
 
   parseIndividual: async (req, res, next) => {
     try {
-      await (new ParseIndividual).execute();
+      await (new ParseIndividual).execute(req.query.url);
       res.status(Status.OK).json({ code: "success" });
     } catch (e) {
       debug('parseIndividual', e);
