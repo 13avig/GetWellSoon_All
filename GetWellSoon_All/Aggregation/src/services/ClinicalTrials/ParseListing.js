@@ -5,45 +5,41 @@ class ParseListing extends PuppeteerHelper {
     super(props);
   }
 
-  async extractTrials(trialList, data) {
-  for (const trial of trialList) {
-      let obj = {};
-      obj.link = await trial.$eval('a', a => a.href);
-      data.push(obj);
-  }
-}
-  
   async execute() {
-    let data = [];
     const page = await this.getNewPage();
     await page.goto('https://clinicaltrials.gov/ct2/results', { timeout: 60000 });
     await page.waitForSelector('#theDataTable tbody');
 
     try {
-      let counter = 2;
       while (true) {
-        data = [];
-        let reviewsElems = await page.$$('#theDataTable .odd td:nth-child(4),#theDataTable .even td:nth-child(4)');
-        await this.extractTrials(reviewsElems, data);
-        let nextPageLink = await page.$('#theDataTable_next span');
+        let data = await page.$$eval('#theDataTable tbody tr[role=row] td a[href]', (elems) => elems.map(el => el.href));
 
-        if (counter > 31500) {
+        const nextButton = await page.$('#theDataTable_next');
+        const isDisabled = await page.evaluate(el => el.className && el.className.includes('disabled'), nextButton);
+
+        // if next page is disabled then break this loop
+        if (isDisabled) {
           break;
         }
 
-        counter++;
-        await nextPageLink.click();
-        await page.waitFor(1000);
-      }
+        await nextButton.click();
 
-      await page.close();
-      return data;
+        // to wait till listing completely loaded 
+        let opacity = 0.2;
+        let attempt = 0;
+        do {
+          attempt += 1;
+          await page.waitFor(3000); // default wait after the next click
+          opacity = await page.evaluate(el => getComputedStyle(el).opacity, await page.$('#theDataTable'));
+        } while(opacity != 1 || attempt < 5);
+      }
     }
     catch (e) {
       console.log(e);
-      await page.close();
       throw e;
     }
+
+    await page.close();
   }
 }
 
