@@ -12,7 +12,7 @@ const allRoutes = require('./src/routes');
  */
 
 app.use('/clinical-trials', allRoutes.clinicalTrials);
-
+app.use('/national-cancer-institue', allRoutes.nationalCancerInstitute);
 
 /**
  * To handle response

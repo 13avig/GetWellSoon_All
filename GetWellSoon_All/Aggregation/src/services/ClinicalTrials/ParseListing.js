@@ -35,6 +35,7 @@ class ParseListing extends PuppeteerHelper {
       }
     }
     catch (e) {
+      await page.close();
       console.log(e);
       throw e;
     }

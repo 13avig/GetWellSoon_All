@@ -1,3 +1,4 @@
 module.exports = {
-  clinicalTrials: require('./clinicalTrials')
+  clinicalTrials: require('./clinicalTrials'),
+  nationalCancerInstitute: require('./nationalCancerInstitute')
 };
