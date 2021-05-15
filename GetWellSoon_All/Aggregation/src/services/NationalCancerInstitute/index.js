@@ -1,3 +1,4 @@
 module.exports = {
-  ParseListing: require('./ParseListing')
+  ParseListing: require('./ParseListing'),
+  ParseIndividual: require('./ParseIndividual')
 };

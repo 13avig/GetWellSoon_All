@@ -22,13 +22,12 @@ class ParseListing extends PuppeteerHelper {
 
         await nextButton[0].click({ delay: 3000 });
       } while(true);
+      await page.close();
     } catch (e) {
       console.log(e);
       await page.close();
       throw e;
     }
-
-    await page.close();
   }
 }
 
