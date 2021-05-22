@@ -1,8 +1,8 @@
 const Status = require('http-status');
-const debug = require('debug')('aggregationapp:controllers/ClinicalTrials');
-const { ParseListing, ParseIndividual } = require('../services/ClinicalTrials');
+const debug = require('debug')('aggregationapp:controllers/NationalCancerInstitute');
+const { ParseListing, ParseIndividual } = require('../services/NationalCancerInstitute');
 
-const ClinicalTrials = {
+const NationalCancerInstitute = {
 
   parseListing: async (req, res, next) => {
     try {
@@ -13,7 +13,6 @@ const ClinicalTrials = {
       res.status(Status.NOT_IMPLEMENTED).json({ code: "error" });
     }
   },
-
   parseIndividual: async (req, res, next) => {
     try {
       await (new ParseIndividual).execute(req.query.url);
@@ -25,4 +24,4 @@ const ClinicalTrials = {
   }
 };
 
-module.exports = ClinicalTrials;
+module.exports = NationalCancerInstitute;

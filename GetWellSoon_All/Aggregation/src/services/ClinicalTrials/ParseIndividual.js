@@ -1,279 +1,242 @@
-const axios = require('axios');
-const url = require("url");
-const cheerio = require("cheerio");
-class ParseIndividual {
+const PuppeteerHelper = require('../../helpers/PuppeteerHelper');
+const { backendAPI } = require('../../utils/api');
 
+class ParseIndividual extends PuppeteerHelper {
   constructor(props) {
+    super();
   }
   
-  async execute(urlgiven) {
-    const { data: html } = await axios(urlgiven);
+  async execute(url) {
+    const page = await this.getNewPage(); // pass false as an argument if you required to debug 
+    await page.goto(url, { timeout: 60000 });
 
-    // set up variables and json
-    let $ = cheerio.load(html);
-    let id = "NCT" + url.parse(urlgiven, true).pathname.replace(/\D/g, "").substring(1, 9);
-    let gender;
-    let sponsor;
-    let participants;
-    let minage;
-    let maxage;
-    let purpose;
-    let type;
-    let intervention;
-    let name;
-    let phase;
-    let conditions;
-    let locationList = [];
-    let interventionList = [];
-    let conditionList = [];
-    let locationNameList = [];
-    let locationZipList = [];
-    let inclusionCriteria = [];
-    let exclusionCriteria = [];
-    let trialurl = url.parse(urlgiven, true).href;
-    let json = {
-        name: "", id: "", purpose: "", sponsor: "", phase: "", interventionList: [], gender: "", minage: "", maxage: "", participants: "", type: "", trialurl: "", conditionList: [], locationList: []
-        , inclusionCriteria: [], exclusionCriteria: []
-    };
+    try {
+      let json = {};
+      const i = 1;
+      let filter = $("#tab-body");
+      let rows = filter.children().eq(0).children().children().children();
 
-    // function to navigate to #sponsor element on page and get elements from its children
-    $("#sponsor").filter(function () {
+      while (i <= 55) {
+        let tempField = rows.eq(i).children().eq(0).text().trim();
+        let tempValue = rows.eq(i).children().eq(1).text().trim();;
 
-        let data = $(this);
+        if (tempField.contains("Submitted Date") && tempField.contains("First")) {
+          json.first_posted = tempValue;
+        }
 
-        sponsor = data.text().trim();
+        if (tempField.contains("Posted Date") && tempField.contains("Last Update")) {
+          json.last_updated = tempValue;
+        }
 
-        json.sponsor = sponsor;
+        if (tempField.contains("Study Start Date")) {
+          json.study_start = tempValue;
+        }
 
-    });
+        if (tempField.contains("Primary Completion")) {
+          json.study_completion = tempValue;
+        }
 
-    // functions to navigate to #tab-body element on page and get elements from its children
-    $("#tab-body").filter(function () {
+        if (tempField.contains("Original Primary Outcome")) {
+          json.primary_outcome = tempValue;
+        }
 
-        let data = $(this);
+        if (tempField.contains("Original Secondary Outcome")) {
+          json.secondary_outcome = tempValue;
+        }
 
-        let common = data.children().children().eq(0).children().eq(4);
+        if (tempField.contains("Brief Title")) {
+          json.brief_title = tempValue;
+        }
 
-        participants = common.children().eq(2).children().eq(1).children().eq(1).text().replace(/\D/g, "");
-        type = common.children().eq(2).children().eq(1).children().eq(0).text();
+        if (tempField.contains("Official Title")) {
+          json.official_title = tempValue;
+        }
 
-        for (let i = 0; i < common.find("tr").length; i++) {
-            if (common.children().eq(2).children().eq(i).children().eq(0).text().trim() === "Primary Purpose:") {
-                purpose = common.children().eq(2).children().eq(i).children().eq(1).text().trim();
-                break;
+        if (tempField.contains("Summary")) {
+          json.summary = tempValue;
+        }
+
+        if (tempField.contains("Description")) {
+          json.description = tempValue;
+        }
+
+        if (tempField.contains("Study Type")) {
+          json.study_type = tempValue;
+        }
+
+        if (tempField.contains("Study Phase")) {
+          json.study_phase = tempValue;
+        }
+
+        if (tempField.contains("Study Design")) {
+          json.study_design = tempValue;
+        }
+
+        if (tempField.contains("Condition")) {
+          const conditionSize = rows.eq(i).children().eq(1).children().children().length;
+
+          if (conditionSize != 0) {
+            const localConditions = [];
+            for (const a = 0; a < conditionSize; a++) {
+              localConditions[a] = rows.eq(i).children().eq(1).children().children().eq(a).text().trim();
+            }
+          }
+          json.conditions = localConditions;
+        }
+
+        if (tempField.contains("Intervention")) {
+          const interventionSize = rows.eq(i).children().eq(1).children().children().length;
+
+          if (interventionSize != 0) {
+            const localInterventions = [];
+            for (const a = 0; a < interventionSize; a++) {
+              localInterventions[a] = rows.eq(i).children().eq(1).children().children().eq(a).text().trim();
+            }
+          }
+          json.interventions = localInterventions;
+        }
+
+        if (tempField.contains("Publication")) {
+          const publicationSize = rows.eq(i).children().eq(1).children().children().length;
+
+          if (publicationSize != 0) {
+            const localPublications = [];
+            for (const a = 0; a < publicationSize; a++) {
+              localPublications[a] = rows.eq(i).children().eq(1).children().children().eq(a).text().trim();
+            }
+          }
+          json.publications = localPublications;
+        }
+
+        if (tempField.contains("Status")) {
+          json.status = tempValue;
+        }
+
+        if (tempField.contains("Enrollment")) {
+          json.enrollment = ParseInt(rows.eq(i).children().eq(1).text().trim());
+        }
+
+        if (tempField.contains("Eligibility Criteria")) {
+          const inclusionSize = rows.eq(i).children().eq(1).children().eq(1).children().length;
+          const exclusionSize = rows.eq(i).children().eq(1).children().eq(3).children().length;
+
+          if (inclusionSize != 0) {
+            const localInclusions = [];
+            for (const a = 0; a < inclusionSize; a++) {
+              localInclusions[a] = rows.eq(i).children().eq(1).children().eq(1).children().eq(a).text().trim();
+            }
+          }
+
+          if (exclusionSize != 0) {
+            const localExclusions = [];
+            for (const a = 0; a < exclusionSize; a++) {
+              localExclusions[a] = rows.eq(i).children().eq(1).children().eq(3).children().eq(a).text().trim();
+            }
+          }
+          json.inclusion_criteria = localInclusions;
+          json.exclusion_criteria = localExclusions;
+        }
+
+        if (tempField.contains("Gender")) {
+          const tempGender = tempValue;
+
+          if (tempGender.contains("All")) {
+            json.gender = "Both";
+          } else if (tempGender.contains("M") || tempGender.toLowerCase().contains("male")) {
+            json.gender = "Male";
+          } else if (tempGender.contains("F") || tempGender.toLowerCase().contains("female")) {
+            json.gender = "Female";
+          } else {
+            json.gender = "Not specified";
+          }
+        }
+
+        if (tempField.contains("Age")) {
+
+          const tempAge = tempValue;
+
+          if (tempAge.toLowerCase().contains("younger")) {
+            json.min_age = 0;
+            json.max_age = tempAge.replace(/[^0-9]/g,'');;
+          } else if (tempAge.toLowerCase().contains("older")) {
+            json.min_age = tempAge.replace(/[^0-9]/g,'');;
+            json.max_age = 125;
+          } else if (tempAge.toLowerCase.contains("to")) {
+            const combAges = tempAge.replace(/[^0-9]/g,'');
+            if (ParseInt(combAges) >= 100 && ParseInt(combAges) < 1000) {
+              json.min_age = ParseInt(combAges.substring(0, 1));
+              json.max_age = ParseInt(combAges.substring(1, 3));
+            } else if (ParseInt(combAges) >= 1000 && ParseInt(combAges) < 10000) {
+              json.min_age = ParseInt(combAges.substring(0, 2));
+              json.max_age = ParseInt(combAges.substring(2, 4));
             } else {
-                purpose = "";
+              json.min_age = ParseInt(combAges.substring(0, 2));
+              json.max_age = ParseInt(combAges.substring(2, 5));
             }
+          } else {
+            json.min_age = "0";
+            json.max_age = "0";
+          }
         }
 
-        for (let i = 0; i < common.find("tr").length; i++) {
-            if (common.children().eq(2).children().eq(i).children().eq(0).text().trim() === "Official Title:") {
-                name = common.children().eq(2).children().eq(i).children().eq(1).text().trim();
-                break;
-            } else {
-                name = "";
+        if (tempField.contains("NCT Number")) {
+          json.nct_id = tempValue;
+        }
+
+        if (tempField.contains("Other Study ID Number")) {
+          let id_fields = document.querySelectorAll('.ct-data_table .ct-header3');
+          let splittedText = null;
+          for (var k = 0; k < id_fields.length; k++) {
+            if (!id_fields[k].innerText.includes('Other Study ID Numbers')) continue;
+            splittedText = id_fields[k].nextElementSibling.innerText.split('\n');
+          }
+          console.log(splittedText);
+          json.other_ids = splittedText;
+        }
+        
+        if (tempField.contains("Responsible Party")) {
+          json.responsible_party = tempValue;
+        }
+
+        if (tempField.contains("Study Sponsor")) {
+          json.study_sponsor = tempValue;
+        }
+
+        if (tempField.contains("Collaborator")) {
+          const collabSize = rows.eq(i).children().eq(1).children().children().length;
+
+          if (collabSize != 0) {
+            const localCollabs = [];
+            for (const a = 0; a < collabSize; a++) {
+              localCollabs[a] = rows.eq(i).children().eq(1).children().children().eq(a).text().trim();
             }
+          }
+          json.collaborators = localCollabs;
         }
 
-        json.type = type;
-        json.participants = participants;
-        json.purpose = purpose;
-        json.name = name;
-    });
+        if (tempField.contains("Investigator")) {
+          const investigatorSize = rows.eq(i).children().eq(1).children().children().length;
 
-    $("#tab-body").filter(function () {
-
-        let data = $(this);
-
-        let common = data.children().children().eq(8).children().eq(5).children().eq(0).children();
-
-        gender = common.eq(2).children().eq(1).children().eq(1).text();
-
-        if (gender === "Female") {
-            gender = "F";
-        } else if (gender === "Male") {
-            gender = "M";
-        } else {
-            gender = "B";
-        }
-
-        if (common.eq(2).children().eq(0).children().eq(1).text().substring(0, 5) === "up to") {
-            minage = 0;
-            maxage = common.eq(2).children().eq(0).children().eq(1).text().replace(/\D/g, "");
-        }
-
-        let age = common.eq(2).children().eq(0).children().eq(1).text().replace(/\D/g, "");
-
-        if (age.length >= 4) {
-            minage = parseInt(age.substring(0, 2), 10);
-            maxage = parseInt(age.substring(2), 10);
-        } else if (age.length === 3) {
-
-            minage = parseInt(age.substring(0, 1), 10);
-            maxage = parseInt(age.substring(1, 3), 10);
-
-        }
-        else {
-
-            minage = parseInt(age.substring(0, 2), 10);
-            maxage = parseInt("125'", 10);
-        }
-
-        let criteriaCommon = data.children().children().eq(8).children().eq(5).children();
-        let j;
-        let index = 0;
-
-        for (j = 0; j < criteriaCommon.length; j++) {
-
-            if (criteriaCommon.eq(j).text() === "Criteria") {
-                while (index < criteriaCommon.eq(j + 1).children().eq(1).children().length) {
-                    inclusionCriteria.push(criteriaCommon.eq(j + 1).children().eq(1).children().eq(index).text());
-                    index++;
-                }
-                index = 0;
-                while (index < criteriaCommon.eq(j + 1).children().eq(3).children().length) {
-                    exclusionCriteria.push(criteriaCommon.eq(j + 1).children().eq(3).children().eq(index).text());
-                    index++;
-                }
+          if (investigatorSize != 0) {
+            const localInvestigators = [];
+            for (const a = 0; a < investigatorSize; a++) {
+              localInvestigators[a] = rows.eq(i).children().eq(1).children().children().eq(a).text().trim();
             }
-
+          }
+          json.investigators = localInvestigators;
         }
+        i++;
+      }
+      
+      await page.close();
+      await backendAPI.post({ url: 'trials/update/trialId', data: { isDeleted: false, ...json } });
+    } catch(e) {
 
-        json.inclusionCriteria = inclusionCriteria;
-        json.exclusionCriteria = exclusionCriteria;
-        json.gender = gender;
-        json.minage = minage;
-        json.maxage = maxage;
-
-    });
-
-    // function to navigate to .ct-data_table element on page and get elements from its children
-    $(".ct-data_table").filter(function () {
-
-        let data = $(this);
-        let j;
-
-        if (data.css("margin") === "auto") {
-
-            if (data.find("tbody").children().eq(1).children().eq(0).children().length === 1) {
-
-                conditions = data.find("tbody").children().eq(1).children().eq(0).children().text().replace(",", "|");
-
-                for (j = 0; j < conditions.length - 1; j++) {
-                    if (conditions.substring(j, j + 1) === "|") {
-                        conditionList.push(conditions.substring(0, j));
-                        conditions = conditions.substring(j + 1);
-                    }
-                }
-                conditionList.push(conditions);
-            }
-
-            else {
-                for (j = 0; j < data.find("tbody").children().eq(1).children().eq(0).children().length; j++) {
-                    conditions = data.find("tbody").children().eq(1).children().eq(0).children().eq(j).text();
-                    conditionList.push(conditions);
-                }
-            }
-        }
-
-        conditionList.push(conditions);
-
-
-        conditionList = [... new Set(conditionList)];
-
-        for (j = 0; j < conditionList.length; j++) {
-            if (conditionList[j] === "") {
-                conditionList.splice(j, 1);
-            }
-        }
-
-        if (data.attr("border") === 1) {
-            for (j = 0; j < data.find("tbody").children().eq(1).children().eq(0).children().length; j++) {
-                intervention = data.find("tbody").children().eq(1).children().eq(1).children().eq(j).text();
-                interventionList.push(intervention);
-            }
-        }
-
-        json.conditionList = conditionList;
-        json.interventionList = interventionList;
-
-    });
-
-    let count = 0;
-
-    // function to navigate to td with header = locName element on page and get elements from its children
-    $("td[headers='locName']").filter(function () {
-
-        let data = $(this);
-
-        //location["locationName"] = data.text();
-
-        locationNameList.push(data.text());
-        locationNameList = [... new Set(locationNameList)];
-
-        let name = locationNameList[count];
-        let location = {};
-        location["name"] = name;
-        locationList.push(location);
-        count++;
-
-        //json.locationNameList = locationNameList;
-
-    });
-
-    // function to navigate to td with colspan = 2 and style = white-space: nowrap element on page and get elements from its children
-    $("td[style='padding-left:4em;white-space:nowrap;']").filter(function () {
-
-        let data = $(this);
-
-        //location["locationName"] = data.text();
-
-        let l;
-        let reverse = data.text().split("").reverse().join("");
-
-        for (l = 0; l < reverse.length; l++) {
-            if (reverse.substring(l, l + 1) === ",") {
-                let zip = reverse.substring(0, l);
-                zip = zip.split("").reverse().join("");
-                locationZipList.push(zip.trim());
-                break;
-            }
-        }
-        locationZipList = [... new Set(locationZipList)];
-
-        let counter = 0;
-
-        for (const locationZip of locationZipList) {
-            let location = locationList[counter];
-            location["zip"] = locationZip;
-            counter++;
-        }
-
-        //json.locationZipList = locationZipList;
-
-    });
-
-    // function to navigate to .ct-data_table element on page and get elements from its children
-    $(".ct-data_table").filter(function () {
-
-        let data = $(this);
-
-        if (data.css("margin") === "auto") {
-            phase = data.find("tbody").children().eq(1).children().eq(2).children().text().replace(/\D/g, "");
-            if (phase === "") {
-                phase = 0;
-            }
-        }
-
-        json.phase = phase;
-
-    });
-
-    json.id = id;
-    json.trialurl = trialurl;
-    json.locationList = locationList;
-
-    return json;
+      await backendAPI.post({ url: 'trials/update/trialId', data: { isDeleted: false } });
+      console.log(e);
+      await page.close();
+      throw e;
+    }
   }
 }
 
