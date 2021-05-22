@@ -12,7 +12,17 @@ class ParseListing extends PuppeteerHelper {
 
     try {
       while (true) {
-        let data = await page.$$eval('#theDataTable tbody tr[role=row] td a[href]', (elems) => elems.map(el => el.href));
+        let urls = await page.$$eval('#theDataTable tbody tr[role=row] td a[href]', (elems) => elems.map(el => el.href));
+
+        axios({
+          method: "post",
+          url: "/trials/add/1",
+          data: {
+            trialUrl: urls
+          }
+        }).then(function(response) {
+          let url_ids = response;
+        });
 
         const nextButton = await page.$('#theDataTable_next');
         const isDisabled = await page.evaluate(el => el.className && el.className.includes('disabled'), nextButton);
