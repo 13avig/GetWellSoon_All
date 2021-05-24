@@ -27,8 +27,8 @@ public class TrialController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/get/id/{trialId}")
-	public Trial getTrial(@PathVariable int trialId) {
-		return getWellSoonService.getTrial(trialId);
+	public Trial getTrial(@PathVariable int id) {
+		return getWellSoonService.getTrial(id);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/add")
@@ -37,23 +37,18 @@ public class TrialController {
 	}
 	
 	@RequestMapping(method = RequestMethod.PUT, value = "/update/id/{trialId}")
-	public void updateTrial(@PathVariable int trialId, @RequestBody Trial trial) { 
-		getWellSoonService.updateTrial(trialId, trial);
+	public void updateTrial(@PathVariable int id, @RequestBody Trial trial) { 
+		getWellSoonService.updateTrial(id, trial);
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete/id/{trialId}")
-	public void deleteTrial(@PathVariable int trialId) { // 
-		getWellSoonService.deleteTrial(trialId);
+	public void deleteTrial(@PathVariable int id) {
+		getWellSoonService.deleteTrial(id);
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete")
 	public void deleteAllTrials() {
 		getWellSoonService.deleteAllTrials();
-	}
-	
-	@RequestMapping(method = RequestMethod.GET, value = "/getBy/{condition}/{gender}/{age}/{location}")
-	public List<Trial> getAllRelevantTrials(@PathVariable String condition, @PathVariable String gender, @PathVariable int age, @PathVariable String location) {
-		return getWellSoonService.getAllRelevantTrials(condition, gender, age, location);
 	}
 	
 }
